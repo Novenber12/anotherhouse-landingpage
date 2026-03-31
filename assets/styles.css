@@ -143,3 +143,97 @@ html { scroll-behavior: smooth; }
   50%       { box-shadow: 0 0 0 10px rgba(99,107,47,0); }
 }
 .availability-badge { animation: badgePulse 2.5s ease-in-out infinite; }
+
+/* ── Floating contact (Zalo + phone) ─────────────────────────── */
+.contact-float {
+  position: fixed;
+  right: 14px;
+  bottom: calc(98px + env(safe-area-inset-bottom, 0px));
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+.contact-float > * { pointer-events: auto; }
+
+.contact-float__btn {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.contact-float__btn:hover {
+  transform: scale(1.06);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.22);
+}
+.contact-float__btn:focus-visible {
+  outline: 2px solid #d4a373;
+  outline-offset: 3px;
+}
+
+.contact-float__ripple {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 132, 255, 0.45);
+  animation: contactFloatRipple 2.2s ease-out infinite;
+  pointer-events: none;
+}
+.contact-float__ripple--delay {
+  animation-delay: 1.1s;
+}
+
+@keyframes contactFloatRipple {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  70%, 100% {
+    transform: scale(1.75);
+    opacity: 0;
+  }
+}
+
+.contact-float__face {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contact-float__btn--zalo .contact-float__face {
+  background: #fff;
+  padding: 6px;
+}
+.contact-float__zalo-img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.contact-float__btn--phone .contact-float__face {
+  background: linear-gradient(145deg, #1e3a5f, #152a45);
+}
+.contact-float__phone-icon {
+  width: 22px;
+  height: 22px;
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-float__ripple {
+    animation: none;
+    display: none;
+  }
+}
