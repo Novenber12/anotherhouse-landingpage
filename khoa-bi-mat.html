@@ -38,6 +38,9 @@
     }
   </script>
 
+  <!-- SHA-256 lib for password hashing (Stanford JSBN) -->
+  <script src="https://cdn.jsdelivr.net/npm/js-sha256@0.11.0/src/sha256.min.js"></script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -651,8 +654,12 @@
   <script>
     /* ═══════════════════════════════════════════════════════════
        CONFIG — change your password here
+       Password is stored as SHA-256 hash. To change it:
+       1. Go to https://www.xorbin.com/tools/sha256-hash-generator
+       2. Enter your new password and copy the hash
+       3. Replace EXPECTED_HASH below with the new hash
     ═══════════════════════════════════════════════════════════ */
-    const SECRET_KEY = 'anotherhouse2026';
+    const EXPECTED_HASH = 'c43ba8351ba7c886e201ac30f716fc4850a528c8613ba91613ad1dc643397df2'; // sha256('anotherhouse2026')
 
     /* ═══════════════════════════════════════════════════════════
        DOM elements
@@ -686,16 +693,14 @@
     function attemptUnlock() {
       const input = keyInput.value.trim();
 
-      // Loading state
       btnText.textContent = 'Đang kiểm tra...';
       unlockBtn.classList.add('loading');
       keyInput.classList.remove('error');
       keyError.classList.remove('visible');
 
-      // Simulate brief check delay for UX
       setTimeout(() => {
-        if (input === SECRET_KEY) {
-          // Success
+        const inputHash = sha256(input);
+        if (inputHash === EXPECTED_HASH) {
           btnText.textContent = '✓ Đúng rồi!';
           unlockBtn.classList.remove('loading');
 
@@ -708,7 +713,6 @@
           }, 600);
 
         } else {
-          // Wrong key
           btnText.textContent = 'Mở khoá';
           unlockBtn.classList.remove('loading');
           keyInput.classList.add('error');
@@ -724,7 +728,6 @@
       if (e.key === 'Enter') attemptUnlock();
     });
 
-    // Clear error on input
     keyInput.addEventListener('input', () => {
       keyInput.classList.remove('error');
       keyError.classList.remove('visible');
