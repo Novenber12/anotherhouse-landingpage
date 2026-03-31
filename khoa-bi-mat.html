@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>🔒 Khoá Bí Mật | Another House</title>
+
+  <link rel="icon" type="image/png" href="/assets/images/Logo.png" />
+  <meta name="theme-color" content="#d4a373" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#1e1e1e',
+            cream: '#f5f1e6',
+            olive: '#636b2f',
+            gold: '#d4a373',
+            'gold-dark': '#b8875a',
+            'gold-light': '#e8c9a0',
+            white: '#f5f5f5',
+          },
+          fontFamily: {
+            serif: ['Playfair Display', 'Georgia', 'serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #1e1e1e;
+      font-family: 'Inter', system-ui, sans-serif;
+      color: #f5f1e6;
+      min-height: 100vh;
+    }
+
+    /* ── Gate overlay ─────────────────────────────────────────── */
+    .gate-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: linear-gradient(160deg, #1e1e1e 0%, #2a2015 50%, #1e1e1e 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    .gate-overlay.unlocked {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .gate-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .gate-bg::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -20%;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,163,115,0.08) 0%, transparent 70%);
+      animation: float 12s ease-in-out infinite;
+    }
+
+    .gate-bg::after {
+      content: '';
+      position: absolute;
+      bottom: -20%;
+      left: -10%;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99,107,47,0.06) 0%, transparent 70%);
+      animation: float 16s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -20px) scale(1.05); }
+      66% { transform: translate(-20px, 15px) scale(0.95); }
+    }
+
+    .gate-card {
+      position: relative;
+      z-index: 1;
+      background: rgba(245,241,230,0.04);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(212,163,115,0.15);
+      border-radius: 2rem;
+      padding: 3rem 2.5rem;
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+    }
+
+    .gate-icon {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 1.5rem;
+      border-radius: 50%;
+      background: rgba(212,163,115,0.1);
+      border: 1px solid rgba(212,163,115,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gate-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #f5f1e6;
+      margin-bottom: 0.5rem;
+    }
+
+    .gate-subtitle {
+      color: rgba(245,241,230,0.45);
+      font-size: 0.875rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    .input-wrap {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    .key-input {
+      width: 100%;
+      background: rgba(245,241,230,0.06);
+      border: 1px solid rgba(245,241,230,0.12);
+      border-radius: 0.875rem;
+      padding: 14px 56px 14px 16px;
+      color: #f5f1e6;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+      letter-spacing: 0.05em;
+    }
+
+    .key-input::placeholder {
+      color: rgba(245,241,230,0.25);
+      letter-spacing: 0;
+      font-size: 0.85rem;
+    }
+
+    .key-input:focus {
+      border-color: rgba(212,163,115,0.5);
+      background: rgba(245,241,230,0.08);
+      box-shadow: 0 0 0 3px rgba(212,163,115,0.1);
+    }
+
+    .key-input.error {
+      border-color: rgba(239,68,68,0.6);
+      box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+
+    .toggle-visibility {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: rgba(245,241,230,0.3);
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s ease;
+    }
+
+    .toggle-visibility:hover { color: rgba(245,241,230,0.6); }
+
+    .error-msg {
+      color: #f87171;
+      font-size: 0.8rem;
+      text-align: left;
+      padding-left: 4px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .error-msg.visible { display: block; }
+
+    .unlock-btn {
+      width: 100%;
+      background-color: #d4a373;
+      color: #1e1e1e;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 14px;
+      border-radius: 0.875rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      letter-spacing: 0.02em;
+    }
+
+    .unlock-btn:hover {
+      background-color: #b8875a;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(212,163,115,0.25);
+    }
+
+    .unlock-btn:active { transform: translateY(0); }
+
+    .unlock-btn.loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(30,30,30,0.3);
+      border-top-color: #1e1e1e;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(212,163,115,0.4), transparent);
+      margin: 1.5rem auto;
+    }
+
+    .hint-text {
+      color: rgba(245,241,230,0.2);
+      font-size: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    /* ── Reveal animation ────────────────────────────────────── */
+    .page-content {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.5s ease 0.3s;
+    }
+
+    .page-content.revealed {
+      display: block;
+      opacity: 1;
+    }
+
+    .content-fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.7s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.25s; }
+    .delay-3 { animation-delay: 0.4s; }
+    .delay-4 { animation-delay: 0.55s; }
+    .delay-5 { animation-delay: 0.7s; }
+
+    /* ── Scrollbar ───────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #1e1e1e; }
+    ::-webkit-scrollbar-thumb { background: rgba(212,163,115,0.3); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(212,163,115,0.5); }
+
+    /* ── Floating Action Buttons (Zalo style) ─────────────────── */
+    .fab-group {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+      z-index: 50;
+    }
+
+    .fab-group.visible {
+      display: flex;
+    }
+
+    .fab-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      position: relative;
+    }
+
+    .fab-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 28px rgba(0,0,0,0.45);
+    }
+
+    .fab-btn:active {
+      transform: scale(0.96);
+    }
+
+    .fab-btn .fab-label {
+      position: absolute;
+      right: calc(100% + 10px);
+      top: 50%;
+      transform: translateY(-50%);
+      background: #1e1e1e;
+      color: #f5f1e6;
+      font-size: 0.75rem;
+      font-weight: 500;
+      white-space: nowrap;
+      padding: 5px 10px;
+      border-radius: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .fab-btn:hover .fab-label {
+      opacity: 1;
+    }
+
+    .fab-key {
+      background: linear-gradient(135deg, #d4a373 0%, #b8875a 100%);
+    }
+
+    .fab-key .fab-label::after {
+      content: '';
+      position: absolute;
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 5px solid transparent;
+      border-left-color: #1e1e1e;
+    }
+
+    .fab-call {
+      background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+    }
+
+    .fab-call .fab-label::after {
+      content: '';
+      position: absolute;
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 5px solid transparent;
+      border-left-color: #1e1e1e;
+    }
+
+    /* Pulse ring for call button */
+    .fab-call::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 2px solid rgba(46, 125, 50, 0.4);
+      animation: pulse-ring 2s ease-out infinite;
+    }
+
+    @keyframes pulse-ring {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    /* Shake animation for key copy */
+    @keyframes fab-shake {
+      0%, 100% { transform: scale(1.1); }
+      30% { transform: scale(1.1) rotate(-5deg); }
+      60% { transform: scale(1.1) rotate(5deg); }
+    }
+
+    .fab-key.copied {
+      animation: fab-shake 0.4s ease;
+    }
+
+    .fab-toast {
+      position: fixed;
+      bottom: 100px;
+      right: 24px;
+      background: #1e1e1e;
+      border: 1px solid rgba(212,163,115,0.3);
+      color: #f5f1e6;
+      font-size: 0.8rem;
+      padding: 10px 16px;
+      border-radius: 10px;
+      z-index: 60;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+    }
+
+    .fab-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════════════════════════════
+       GATE SCREEN — password required to unlock
+  ══════════════════════════════════════════════════════════ -->
+  <div id="gate" class="gate-overlay" role="main" aria-label="Trang yêu cầu mật khẩu">
+
+    <div class="gate-bg" aria-hidden="true"></div>
+
+    <!-- Logo -->
+    <div class="absolute top-6 left-0 right-0 flex justify-center">
+      <a href="/" class="flex items-center gap-2" aria-label="Another House">
+        <img src="/assets/images/Logo.png" alt="Another House" class="h-9 w-auto object-contain opacity-60" width="180" height="70" />
+      </a>
+    </div>
+
+    <!-- Card -->
+    <div class="gate-card" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+      <div class="gate-icon" aria-hidden="true">
+        <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
+        </svg>
+      </div>
+
+      <h1 id="gate-title" class="gate-title">Khoá Bí Mật</h1>
+      <p class="gate-subtitle">
+        Trang này được bảo vệ.<br/>Vui lòng nhập mật khẩu để truy cập nội dung.
+      </p>
+
+      <div class="input-wrap">
+        <input
+          id="key-input"
+          type="password"
+          class="key-input"
+          placeholder="Nhập mật khẩu..."
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          aria-label="Mật khẩu truy cập"
+          aria-describedby="key-error"
+        />
+        <button id="toggle-vis" class="toggle-visibility" aria-label="Hiện/ẩn mật khẩu" type="button">
+          <!-- Eye open (default: hidden) -->
+          <svg id="eye-open" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          <!-- Eye slash (default: visible) -->
+          <svg id="eye-closed" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/>
+          </svg>
+        </button>
+      </div>
+
+      <p id="key-error" class="error-msg" role="alert">
+        Mật khẩu không đúng. Vui lòng thử lại.
+      </p>
+
+      <button id="unlock-btn" class="unlock-btn" type="button">
+        <svg id="lock-icon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 119 0v3.75M3.75 21.75h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
+        </svg>
+        <span id="btn-text">Mở khoá</span>
+      </button>
+
+      <div class="divider"></div>
+
+      <a href="/" class="text-white/25 hover:text-gold text-xs transition-colors flex items-center justify-center gap-1.5">
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/>
+        </svg>
+        Quay về trang chủ
+      </a>
+
+      <p class="hint-text">Liên hệ 0764905619 để được cấp mật khẩu</p>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       SECRET PAGE CONTENT — revealed after unlock
+  ══════════════════════════════════════════════════════════ -->
+  <div id="page-content" class="page-content">
+
+    <!-- Header -->
+    <header class="w-full py-6 px-6 md:px-10">
+      <div class="max-w-6xl mx-auto flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2">
+          <img src="/assets/images/Logo.png" alt="Another House" class="h-9 w-auto object-contain" width="180" height="70" />
+        </a>
+        <a href="/" class="text-white/40 hover:text-gold text-sm font-medium transition-colors flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/>
+          </svg>
+          Trang chủ
+        </a>
+      </div>
+    </header>
+
+    <!-- Secret Content — EDIT THIS SECTION -->
+    <main class="max-w-4xl mx-auto px-6 py-16 text-center">
+
+      <div class="content-fade-in">
+        <div class="inline-flex items-center gap-2 bg-gold/10 border border-gold/20 text-gold text-xs font-semibold px-4 py-2 rounded-full mb-6">
+          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+          </svg>
+          Nội dung bí mật
+        </div>
+        <h1 class="font-serif text-4xl md:text-5xl font-bold text-cream mb-4">
+          Khoá Bí Mật — <span class="text-gold italic">Unlocked!</span>
+        </h1>
+        <div class="w-16 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent mx-auto mb-6"></div>
+        <p class="text-white/50 text-base md:text-lg leading-relaxed max-w-xl mx-auto mb-8">
+          Bạn đã truy cập thành công vào trang nội dung bí mật của Another House.
+          Nội dung bên dưới chỉ hiển thị khi nhập đúng mật khẩu.
+        </p>
+      </div>
+
+      <!-- Info cards: lock codes & wifi -->
+      <div class="content-fade-in delay-1 grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+
+        <!-- Khóa cổng -->
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 text-center hover:border-gold/30 transition-colors">
+          <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9.75h16.5M4.5 15h15M6.75 20.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
+            </svg>
+          </div>
+          <p class="text-white/40 text-xs uppercase tracking-wider mb-1">Khóa cổng</p>
+          <p class="font-serif text-3xl font-bold text-gold">2010</p>
+        </div>
+
+        <!-- Khóa phòng -->
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 text-center hover:border-gold/30 transition-colors">
+          <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"/>
+            </svg>
+          </div>
+          <p class="text-white/40 text-xs uppercase tracking-wider mb-1">Khóa phòng</p>
+          <p class="font-serif text-3xl font-bold text-gold">1304</p>
+        </div>
+
+        <!-- Pass WiFi -->
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 text-center hover:border-gold/30 transition-colors">
+          <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0"/>
+            </svg>
+          </div>
+          <p class="text-white/40 text-xs uppercase tracking-wider mb-1">Mật khẩu WiFi</p>
+          <p class="font-serif text-xl font-bold text-gold leading-tight">12345678@X</p>
+        </div>
+      </div>
+
+      <!-- Note -->
+      <div class="content-fade-in delay-2 bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
+        <div class="w-12 h-12 bg-gold/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
+          </svg>
+        </div>
+        <h2 class="font-serif text-xl font-bold text-cream mb-3">Thông tin quan trọng</h2>
+        <p class="text-white/40 text-sm leading-relaxed max-w-md mx-auto">
+          Vui lòng giữ kín các mã khóa trên. Trả phòng đúng giờ quy định và tắt điều hòa trước khi ra về. Liên hệ 0764905619 nếu cần hỗ trợ.
+        </p>
+      </div>
+
+      <!-- Extra info -->
+      <div class="content-fade-in delay-3 mt-8 text-xs text-white/20">
+        <p>anotherhouse.vn · 35 Hoàng Sa, Q.1, TP.HCM · 0764905619</p>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- FAB Group: Key + Call -->
+  <div id="fab-group" class="fab-group">
+
+    <!-- Nút Key — sao chép mã khóa -->
+    <button id="fab-key" class="fab-btn fab-key" aria-label="Sao chép mã khóa" type="button">
+      <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"/>
+      </svg>
+      <span class="fab-label">Sao chép mã</span>
+    </button>
+
+    <!-- Nút gọi điện -->
+    <a href="tel:0764905619" class="fab-btn fab-call" aria-label="Gọi điện thoại" type="button">
+      <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"/>
+      </svg>
+      <span class="fab-label">Gọi ngay</span>
+    </a>
+  </div>
+
+  <!-- Toast notification -->
+  <div id="fab-toast" class="fab-toast" role="status" aria-live="polite"></div>
+
+  <script>
+    /* ═══════════════════════════════════════════════════════════
+       CONFIG — change your password here
+    ═══════════════════════════════════════════════════════════ */
+    const SECRET_KEY = 'anotherhouse2026';
+
+    /* ═══════════════════════════════════════════════════════════
+       DOM elements
+    ═══════════════════════════════════════════════════════════ */
+    const gate        = document.getElementById('gate');
+    const pageContent = document.getElementById('page-content');
+    const keyInput    = document.getElementById('key-input');
+    const unlockBtn   = document.getElementById('unlock-btn');
+    const btnText     = document.getElementById('btn-text');
+    const keyError    = document.getElementById('key-error');
+    const toggleVis   = document.getElementById('toggle-vis');
+    const eyeOpen     = document.getElementById('eye-open');
+    const eyeClosed   = document.getElementById('eye-closed');
+    const fabGroup    = document.getElementById('fab-group');
+    const fabKey      = document.getElementById('fab-key');
+    const fabToast    = document.getElementById('fab-toast');
+
+    /* ═══════════════════════════════════════════════════════════
+       Toggle password visibility
+    ═══════════════════════════════════════════════════════════ */
+    toggleVis.addEventListener('click', () => {
+      const isPassword = keyInput.type === 'password';
+      keyInput.type = isPassword ? 'text' : 'password';
+      eyeOpen.classList.toggle('hidden', isPassword);
+      eyeClosed.classList.toggle('hidden', !isPassword);
+    });
+
+    /* ═══════════════════════════════════════════════════════════
+       Unlock logic
+    ═══════════════════════════════════════════════════════════ */
+    function attemptUnlock() {
+      const input = keyInput.value.trim();
+
+      // Loading state
+      btnText.textContent = 'Đang kiểm tra...';
+      unlockBtn.classList.add('loading');
+      keyInput.classList.remove('error');
+      keyError.classList.remove('visible');
+
+      // Simulate brief check delay for UX
+      setTimeout(() => {
+        if (input === SECRET_KEY) {
+          // Success
+          btnText.textContent = '✓ Đúng rồi!';
+          unlockBtn.classList.remove('loading');
+
+          setTimeout(() => {
+            gate.classList.add('unlocked');
+            pageContent.classList.add('revealed');
+            fabGroup.classList.add('visible');
+            document.title = 'Khoá Bí Mật — Đã mở | Another House';
+            document.body.style.overflow = 'auto';
+          }, 600);
+
+        } else {
+          // Wrong key
+          btnText.textContent = 'Mở khoá';
+          unlockBtn.classList.remove('loading');
+          keyInput.classList.add('error');
+          keyError.classList.add('visible');
+          keyInput.focus();
+        }
+      }, 500);
+    }
+
+    unlockBtn.addEventListener('click', attemptUnlock);
+
+    keyInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') attemptUnlock();
+    });
+
+    // Clear error on input
+    keyInput.addEventListener('input', () => {
+      keyInput.classList.remove('error');
+      keyError.classList.remove('visible');
+    });
+
+    /* ═══════════════════════════════════════════════════════════
+       FAB — copy key codes
+    ═══════════════════════════════════════════════════════════ */
+    function showToast(msg) {
+      fabToast.textContent = msg;
+      fabToast.classList.add('show');
+      setTimeout(() => fabToast.classList.remove('show'), 2200);
+    }
+
+    fabKey.addEventListener('click', () => {
+      const codes = 'Khóa cổng: 2010\nKhóa phòng: 1304\nWiFi: 12345678@X';
+      navigator.clipboard.writeText(codes).then(() => {
+        fabKey.classList.add('copied');
+        setTimeout(() => fabKey.classList.remove('copied'), 500);
+        showToast('Đã sao chép mã khóa!');
+      }).catch(() => {
+        showToast('Không thể sao chép, hãy sao chép thủ công.');
+      });
+    });
+  </script>
+
+</body>
+</html>

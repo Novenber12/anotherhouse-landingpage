@@ -253,6 +253,16 @@ html { scroll-behavior: smooth; }
   color: #fff;
 }
 
+.contact-float__btn--key .contact-float__face {
+  background: linear-gradient(145deg, #d4a373, #b8875a);
+}
+.contact-float__btn--key img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: block;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .contact-float__ripple {
     animation: none;
