@@ -252,6 +252,39 @@
       pointer-events: none;
     }
 
+    .gate-pay-btn {
+      width: 100%;
+      margin-top: 12px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 12px 14px;
+      border-radius: 0.875rem;
+      border: 1px solid rgba(212, 163, 115, 0.55);
+      background: rgba(212, 163, 115, 0.08);
+      color: #e8c9a0;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      letter-spacing: 0.02em;
+    }
+
+    .gate-pay-btn:hover {
+      background: rgba(212, 163, 115, 0.2);
+      border-color: #d4a373;
+      color: #f5f1e6;
+      box-shadow: 0 4px 20px rgba(212, 163, 115, 0.12);
+    }
+
+    .gate-pay-btn:focus-visible {
+      outline: 2px solid #d4a373;
+      outline-offset: 2px;
+    }
+
     .spinner {
       width: 16px;
       height: 16px;
@@ -385,6 +418,20 @@
       border-left-color: #1e1e1e;
     }
 
+    .fab-pay {
+      background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+    }
+
+    .fab-pay .fab-label::after {
+      content: '';
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 5px solid transparent;
+      border-right-color: #1e1e1e;
+    }
+
     .fab-call {
       background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
     }
@@ -515,6 +562,13 @@
         <span id="btn-text">Mở khoá</span>
       </button>
 
+      <a href="/thanh-toan.html" class="gate-pay-btn" aria-label="Chuyển đến trang thanh toán chuyển khoản">
+        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
+        </svg>
+        Thanh toán chuyển khoản
+      </a>
+
       <div class="divider"></div>
 
       <a href="/" class="text-white/25 hover:text-gold text-xs transition-colors flex items-center justify-center gap-1.5">
@@ -611,8 +665,54 @@
           <div class="flex-1 min-w-0">
             <h3 class="text-cream font-semibold text-base mb-1.5">Đến cổng &amp; vào nhà</h3>
             <p class="text-white/45 text-sm leading-relaxed">
-              Nếu <strong class="text-cream">cổng đã mở sẵn</strong>, đi thẳng vào luôn, bỏ qua bước nhập mã. Nếu cổng đóng, nhập <strong class="text-gold/80">mã 2010</strong> vào bàn phím khóa cổng bên dưới, rồi đi thẳng vào và <strong class="text-cream">lên lầu 1, phía tay phải</strong> để nhận chìa khóa phòng.
+              Nếu <strong class="text-cream">cổng đã mở sẵn</strong>, đi thẳng vào luôn, bỏ qua bước nhập mã. Nếu cổng đóng, nhập <strong class="text-gold/80">mã 2010</strong> vào bàn phím khóa cổng bên dưới, rồi đi thẳng vào và <strong class="text-cream">lên lầu 1, phía tay phải</strong> để nhận chìa khóa phòng. Sau khi có <strong class="text-cream">chìa khóa cổng</strong>, dùng <strong class="text-gold/80">hộp điều khiển cửa cuốn</strong> như hướng dẫn ngay bên dưới.
             </p>
+          </div>
+        </div>
+
+        <!-- Điều khiển cửa cổng (công tắc) — sau khi có chìa -->
+        <div class="flex gap-5 items-start bg-gold/5 border border-gold/25 rounded-2xl p-6 hover:border-gold/35 transition-colors">
+          <div class="flex-shrink-0 w-12 h-12 bg-gold/15 border border-gold/35 rounded-full flex items-center justify-center text-gold">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-cream font-semibold text-base mb-1.5">Điều khiển cửa cổng (cửa cuốn)</h3>
+            <p class="text-white/45 text-sm leading-relaxed mb-4">
+              Dùng <strong class="text-cream/80">chìa khóa cổng</strong> mở khóa và kéo <strong class="text-cream/80">cánh cửa kim loại</strong> của hộp điều khiển — bên trong có bảng nút. Nhấn giữ từng nút cho đến khi cửa mở/đóng hết; dùng nút đỏ để dừng khi cần.
+            </p>
+            <ul class="text-white/50 text-sm space-y-2 mb-5 border-l-2 border-gold/30 pl-4">
+              <li><strong class="text-gold/90">Nút vàng cam trên (▲):</strong> mở cổng / nâng cửa cuốn</li>
+              <li><strong class="text-gold/90">Nút đỏ giữa:</strong> dừng cửa</li>
+              <li><strong class="text-gold/90">Nút vàng cam dưới (▼):</strong> đóng cổng / hạ cửa cuốn</li>
+            </ul>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <figure class="rounded-xl overflow-hidden border border-white/10 bg-black/25">
+                <img
+                  src="/assets/images/cong-cuon-hop-khoa.png"
+                  alt="Hộp điều khiển cửa cuốn treo tường: mở khóa bằng chìa, kéo cánh kim loại để lộ ba nút điều khiển"
+                  class="w-full h-auto max-h-64 sm:max-h-72 object-contain object-center"
+                  width="600"
+                  height="800"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption class="px-3 py-2 text-white/35 text-xs text-center border-t border-white/5">Mở khóa hộp bằng chìa cổng</figcaption>
+              </figure>
+              <figure class="rounded-xl overflow-hidden border border-white/10 bg-black/25">
+                <img
+                  src="/assets/images/cong-cuon-nut-bam.png"
+                  alt="Cận cảnh ba nút: vàng cam mũi tên lên, đỏ dừng ở giữa, vàng cam mũi tên xuống"
+                  class="w-full h-auto max-h-64 sm:max-h-72 object-contain object-center"
+                  width="600"
+                  height="800"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption class="px-3 py-2 text-white/35 text-xs text-center border-t border-white/5">▲ mở · đỏ dừng · ▼ đóng</figcaption>
+              </figure>
+            </div>
           </div>
         </div>
 
@@ -678,8 +778,33 @@
         </div>
       </div>
 
+      <!-- ── Hướng dẫn sử dụng nội thất (điều khiển) ── -->
+      <div class="content-fade-in delay-2 mb-10">
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-8 h-px bg-gold/30 flex-shrink-0"></div>
+          <h2 class="font-serif text-xl font-bold text-cream tracking-wide">Hướng dẫn sử dụng nội thất</h2>
+        </div>
+        <p class="text-white/45 text-sm leading-relaxed mb-5 max-w-2xl">
+          Các remote treo tường có nhãn tiếng Việt — đối chiếu hình bên dưới để bật đúng thiết bị (Apple TV, tivi, quạt, máy lạnh).
+        </p>
+        <figure class="rounded-2xl overflow-hidden border border-white/10 bg-black/20 shadow-lg shadow-black/20">
+          <img
+            src="/assets/images/huong-dan-dieu-khien.png"
+            alt="Bốn remote treo tường: Apple TV, Tivi Casper, Quạt MR.VU, Máy lạnh Daikin — mỗi remote có nhãn tên thiết bị"
+            class="w-full h-auto object-contain object-center max-h-[min(72vh,520px)] mx-auto"
+            width="1600"
+            height="900"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption class="px-4 py-3 text-white/35 text-xs text-center border-t border-white/5">
+            Apple TV · Tivi · Quạt · Máy lạnh — nhận biết theo nhãn phía trên từng remote
+          </figcaption>
+        </figure>
+      </div>
+
       <!-- ── Lock Codes & WiFi ── -->
-      <div class="content-fade-in delay-2 grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div class="content-fade-in delay-3 grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
 
         <!-- Khóa cổng -->
         <div class="bg-white/5 border border-white/10 rounded-2xl p-6 text-center hover:border-gold/30 transition-colors">
@@ -731,19 +856,33 @@
 
         <!-- Pass WiFi -->
         <div class="bg-white/5 border border-white/10 rounded-2xl p-6 text-center hover:border-gold/30 transition-colors">
-          <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center mx-auto mb-3">
             <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0"/>
             </svg>
           </div>
-          <p class="text-white/40 text-xs uppercase tracking-wider mb-1">Mật khẩu WiFi</p>
+          <p class="text-white/40 text-xs uppercase tracking-wider mb-3">Mật khẩu WiFi</p>
+          <figure class="mx-auto mb-4 rounded-xl overflow-hidden border border-white/10 bg-black/20 max-w-[220px] sm:max-w-none">
+            <img
+              src="/assets/images/wifi-huong-dan.png"
+              alt="Hướng dẫn bật Wi-Fi và chọn mạng: ví dụ AL_5G đã kết nối, cùng danh sách AL_2G4, AL_HOST, Bếp"
+              class="w-full h-auto max-h-56 object-contain object-center bg-white/5"
+              width="400"
+              height="720"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption class="sr-only">Menu Wi-Fi Windows — chọn mạng phòng và nhập mật khẩu</figcaption>
+          </figure>
           <p class="font-serif text-xl font-bold text-gold leading-tight">12345678@X</p>
-          <p class="text-white/25 text-xs mt-1">Kết nối: AnotherHouse</p>
+          <p class="text-white/35 text-xs mt-2 leading-relaxed px-1">
+            Chọn mạng phòng trong danh sách Wi‑Fi (ví dụ <strong class="text-cream/80">AL_5G</strong> hoặc <strong class="text-cream/80">AnotherHouse</strong>), sau đó dán mật khẩu ở trên.
+          </p>
         </div>
       </div>
 
       <!-- Note -->
-      <div class="content-fade-in delay-3 bg-white/5 border border-white/10 rounded-2xl p-8">
+      <div class="content-fade-in delay-4 bg-white/5 border border-white/10 rounded-2xl p-8">
         <div class="flex gap-4 items-start">
           <div class="w-10 h-10 bg-gold/10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
             <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
@@ -763,7 +902,7 @@
       </div>
 
       <!-- Address -->
-      <div class="content-fade-in delay-4 mt-8 text-center text-xs text-white/20">
+      <div class="content-fade-in delay-5 mt-8 text-center text-xs text-white/20">
         <p>anotherhouse.vn · 35 Hoàng Sa, Q.1, TP.HCM · 0764905619</p>
       </div>
 
@@ -781,6 +920,14 @@
       </svg>
       <span class="fab-label">Sao chép mã</span>
     </button>
+
+    <!-- Nút Thanh toán — chuyển đến trang chuyển khoản -->
+    <a href="/thanh-toan.html" target="_blank" class="fab-btn fab-pay" aria-label="Đến trang thanh toán">
+      <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
+      </svg>
+      <span class="fab-label">Thanh toán</span>
+    </a>
 
     <!-- Nút gọi điện -->
     <a href="tel:0764905619" class="fab-btn fab-call" aria-label="Gọi điện thoại" type="button">

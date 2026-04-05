@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f8bbd0" />
+  <title>Thanh toán chuyển khoản – MB Bank | Another House</title>
+  <link rel="icon" type="image/png" href="/assets/images/Logo.png" />
+  <link rel="canonical" href="https://anotherhouse.vn/thanh-toan.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --vietqr-red: #ed1c24;
+      --vietqr-blue: #003399;
+      --napas-lime: #c4d600;
+      --name-purple: #6b4c9a;
+      --ink: #1a1a1a;
+      --card-radius: 20px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      font-family: Inter, system-ui, sans-serif;
+      color: var(--ink);
+      background: linear-gradient(165deg, #fff5f8 0%, #fce4ec 45%, #f8bbd0 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px 60px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Decorative hearts */
+    .hearts {
+      position: fixed;
+      inset: auto 0 0 0;
+      height: 45vh;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hearts::before,
+    .hearts::after {
+      content: "";
+      position: absolute;
+      width: min(200px, 45vw);
+      height: min(180px, 40vw);
+      border-radius: 50% 50% 48% 52% / 42% 42% 58% 58%;
+      background: radial-gradient(ellipse at 30% 25%, rgba(255, 255, 255, 0.45), transparent 50%),
+        linear-gradient(145deg, #ff8da1, #e91e63 55%, #c2185b);
+      opacity: 0.35;
+      filter: blur(0.5px);
+      box-shadow: inset -8px -12px 24px rgba(255, 255, 255, 0.25);
+    }
+
+    .hearts::before {
+      left: -5%;
+      bottom: -8%;
+      transform: rotate(-18deg) scale(1.05);
+    }
+
+    .hearts::after {
+      right: -8%;
+      bottom: -12%;
+      transform: rotate(22deg) scale(0.95);
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 700px;
+    }
+
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #7a5c6a;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+
+    .back:hover { color: var(--vietqr-blue); }
+
+    .card {
+      background: #fff;
+      border-radius: var(--card-radius);
+      box-shadow: 0 12px 40px rgba(233, 30, 99, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+      padding: 22px 20px 20px;
+    }
+
+    /* ── Two-column grid ─────────────────────────── */
+    .grid-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 520px) {
+      .grid-inner {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── Left column: account info + form ───────── */
+    .header-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .mb-icon {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+    }
+
+    .header-text { flex: 1; min-width: 0; }
+
+    .beneficiary {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--name-purple);
+      line-height: 1.3;
+      margin: 0 0 4px;
+    }
+
+    .stk-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .stk {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      margin: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .btn-copy {
+      border: none;
+      background: linear-gradient(180deg, #fce4ec, #f8bbd0);
+      color: #880e4f;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .btn-copy:hover { filter: brightness(1.05); }
+    .btn-copy:active { transform: scale(0.97); }
+
+    .bank-line {
+      font-size: 0.75rem;
+      color: #555;
+      margin: 5px 0 0;
+    }
+
+    /* ── Form inputs ─────────────────────────────── */
+    .form-section {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .form-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #888;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .field {
+      margin-bottom: 10px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #444;
+      margin-bottom: 5px;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #e8e0ea;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--ink);
+      background: #fefefe;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: #e91e63;
+      box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+    }
+
+    .field input::placeholder { color: #bbb; font-weight: 400; }
+
+    #amount-input { letter-spacing: 0.02em; }
+
+    .amount-hint {
+      font-size: 0.7rem;
+      color: #999;
+      margin-top: 4px;
+    }
+
+    /* Amount preset chips */
+    .preset-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .preset-chip {
+      border: 1.5px solid #e8e0ea;
+      background: #fafafa;
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #666;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+
+    .preset-chip:hover {
+      border-color: #e91e63;
+      color: #e91e63;
+      background: #fce4ec;
+    }
+
+    .preset-chip.active {
+      border-color: #e91e63;
+      background: #e91e63;
+      color: #fff;
+    }
+
+    /* QR preview strip */
+    .qr-preview {
+      margin-top: 12px;
+      padding: 8px 10px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      color: #666;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .qr-preview .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #bbb;
+      flex-shrink: 0;
+    }
+
+    .qr-preview.active .dot { background: #4caf50; }
+
+    /* ── Right column: QR ───────────────────────── */
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 12px 0 8px;
+      margin-bottom: 4px;
+    }
+
+    .logo-vietqr {
+      font-size: 1.0625rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-vietqr .v { color: var(--vietqr-red); }
+    .logo-vietqr .q { color: var(--vietqr-blue); }
+    .logo-vietqr .r { color: var(--vietqr-blue); }
+
+    .logo-mb {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 800;
+      font-size: 1.375rem;
+      color: var(--vietqr-blue);
+      letter-spacing: -0.03em;
+    }
+
+    .qr-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 4px 0 10px;
+    }
+
+    .qr-wrap img {
+      width: min(240px, 100%);
+      height: auto;
+      border-radius: 12px;
+      display: block;
+      border: 1px solid #f0f0f0;
+    }
+
+    .qr-fallback {
+      display: none;
+      text-align: center;
+      font-size: 0.8125rem;
+      color: #c62828;
+      padding: 12px;
+      background: #ffebee;
+      border-radius: 12px;
+    }
+
+    .qr-fallback.visible { display: block; }
+
+    .hint {
+      font-size: 0.75rem;
+      color: #888;
+      text-align: center;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .footer-logos {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding-top: 10px;
+      border-top: 1px solid #f0f0f0;
+      margin-top: 10px;
+      width: 100%;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: #aaa;
+    }
+
+    .footer-logos .vq-pay .v { color: var(--vietqr-red); }
+    .footer-logos .vq-pay .rest { color: var(--vietqr-blue); }
+    .footer-logos .napas span:first-child { color: var(--vietqr-blue); font-size: 0.7rem; }
+    .footer-logos .napas span:last-child { color: var(--napas-lime); font-size: 0.8rem; }
+
+    /* ── Toast ───────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(120%);
+      background: #1a1a1a;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      opacity: 0;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <a class="back" href="/index.html">← Về trang chủ</a>
+
+    <div class="card">
+      <div class="grid-inner">
+
+        <!-- ── Left: account + form ─────────── -->
+        <div>
+          <div class="header-row">
+            <svg class="mb-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect width="40" height="40" rx="8" fill="#fff5f5"/>
+              <path d="M20 8l2.2 6.8h7.1l-5.7 4.1 2.2 6.8L20 21.6l-5.8 4.1 2.2-6.8-5.7-4.1h7.1L20 8z" fill="#e31e24"/>
+              <path d="M20 14l1.1 3.4h3.6l-2.9 2.1 1.1 3.4L20 22.8l-2.9 2.1 1.1-3.4-2.9-2.1h3.6L20 14z" fill="#c41e3a" opacity=".85"/>
+            </svg>
+            <div class="header-text">
+              <p class="beneficiary">HOANG THI DIEM LY</p>
+              <div class="stk-row">
+                <p class="stk" id="displayStk">190406201006</p>
+                <button type="button" class="btn-copy" id="copyStk" aria-label="Sao chép số tài khoản">Sao chép</button>
+              </div>
+              <p class="bank-line">MB Bank · VietQR / Napas 247</p>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <p class="form-title">Nhập thông tin chuyển khoản</p>
+
+            <div class="field">
+              <label for="amount-input">Số tiền (VNĐ)</label>
+              <input
+                type="text"
+                id="amount-input"
+                placeholder="VD: 500.000"
+                inputmode="numeric"
+                autocomplete="off"
+              />
+              <div class="preset-row" id="presetRow">
+                <button type="button" class="preset-chip" data-amount="520000">520K</button>
+                <button type="button" class="preset-chip" data-amount="498000">498K</button>
+                <button type="button" class="preset-chip" data-amount="360000">360K</button>
+              </div>
+              <p class="amount-hint">Nhập hoặc chọn nhanh số tiền đặt cọc</p>
+            </div>
+
+            <div class="field">
+              <label for="addinfo-input">Nội dung chuyển khoản</label>
+              <input
+                type="text"
+                id="addinfo-input"
+                placeholder="VD: Dat phong Golden Room"
+                maxlength="50"
+                autocomplete="off"
+              />
+              <p class="amount-hint" id="addinfo-count">0 / 50 ký tự · mặc định: "thanh toan AnotherHouse"</p>
+            </div>
+
+            <div class="qr-preview" id="qrPreview">
+              <span class="dot"></span>
+              <span id="previewText">Chưa nhập số tiền</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Right: QR code ──────────────── -->
+        <div class="right-col">
+          <div class="brand-row">
+            <span class="logo-vietqr"><span class="v">Viet</span><span class="q">Q</span><span class="r">R</span></span>
+            <div class="logo-mb">
+              <svg width="26" height="26" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M20 6l2.5 7.5h8l-6.5 4.7 2.5 7.5L20 23.2l-6.5 4.7 2.5-7.5-6.5-4.7h8L20 6z" fill="#e31e24"/>
+              </svg>
+              MB
+            </div>
+          </div>
+
+          <div class="qr-wrap">
+            <img id="qrImg" src="" alt="Mã VietQR chuyển khoản MB Bank" width="240" height="288" loading="eager"/>
+          </div>
+          <p class="qr-fallback" id="qrFallback">Không tải được mã QR. Vui lòng chuyển khoản thủ công.</p>
+
+          <p class="hint">Quét bằng app ngân hàng hỗ trợ VietQR</p>
+
+          <div class="footer-logos">
+            <span class="vq-pay"><span class="v">Viet</span><span class="rest">QR Pay</span></span>
+            <span class="vq-pay"><span class="v">Viet</span><span class="rest">QR Global</span></span>
+            <span class="napas"><span>napas</span> <span>247</span></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status">Đã sao chép</div>
+
+  <script>
+    (function () {
+      var BIN_MB       = "970422";
+      var ACCOUNT_NO   = "190406201006";
+      var ACCOUNT_NAME = "HOANG THI DIEM LY";
+
+      var params   = new URLSearchParams(window.location.search);
+      var initAmt  = params.get("amount")  || "";
+      var initInfo = params.get("addInfo")  || DEFAULT_ADDINFO;
+
+      var amountInput  = document.getElementById("amount-input");
+      var addInfoInput = document.getElementById("addinfo-input");
+      var qrImg        = document.getElementById("qrImg");
+      var qrFallback   = document.getElementById("qrFallback");
+      var qrPreview    = document.getElementById("qrPreview");
+      var previewText  = document.getElementById("previewText");
+      var addinfoCount = document.getElementById("addinfo-count");
+
+      var DEFAULT_ADDINFO = "thanh toan AnotherHouse";
+
+      function getDigits(str) {
+        return String(str || "").replace(/[^\d]/g, "");
+      }
+
+      function formatVnd(numStr) {
+        var n = parseInt(numStr, 10);
+        if (isNaN(n) || n === 0) return null;
+        return n.toLocaleString("vi-VN");
+      }
+
+      function buildQrUrl() {
+        var digits = getDigits(amountInput.value);
+        var raw    = addInfoInput.value.trim();
+        var info   = (raw === "" || raw === DEFAULT_ADDINFO) ? DEFAULT_ADDINFO : raw;
+        var base =
+          "https://img.vietqr.io/image/" +
+          BIN_MB + "-" + encodeURIComponent(ACCOUNT_NO) + "-compact2.png";
+        var q = new URLSearchParams();
+        if (digits) q.set("amount", digits);
+        if (info)   q.set("addInfo", info.slice(0, 50));
+        q.set("accountName", ACCOUNT_NAME.slice(0, 50));
+        return base + "?" + q.toString();
+      }
+
+      function updatePreview() {
+        var digits    = getDigits(amountInput.value);
+        var raw       = addInfoInput.value.trim();
+        var info      = (raw === "" || raw === DEFAULT_ADDINFO) ? DEFAULT_ADDINFO : raw;
+        var formatted = formatVnd(digits);
+
+        if (formatted) {
+          qrPreview.classList.add("active");
+          previewText.textContent = formatted + " đ · " + info;
+        } else {
+          qrPreview.classList.remove("active");
+          previewText.textContent = info;
+        }
+      }
+
+      function updateQr() {
+        qrImg.src = buildQrUrl();
+        qrImg.style.display = "";
+        qrFallback.classList.remove("visible");
+
+        var url    = new URL(window.location);
+        var digits = getDigits(amountInput.value);
+        var raw    = addInfoInput.value.trim();
+        var info   = (raw === "" || raw === DEFAULT_ADDINFO) ? DEFAULT_ADDINFO : raw;
+        if (digits) url.searchParams.set("amount", digits);
+        else         url.searchParams.delete("amount");
+        url.searchParams.set("addInfo", info);
+        window.history.replaceState({}, "", url);
+      }
+
+      function onInputChange() {
+        updatePreview();
+        updateQr();
+      }
+
+      // Amount formatting: auto-add thousand separators as you type
+      amountInput.addEventListener("input", function () {
+        var raw = getDigits(amountInput.value);
+        if (raw) {
+          var formatted = parseInt(raw, 10).toLocaleString("vi-VN");
+          var start    = amountInput.selectionStart;
+          var diff     = formatted.length - amountInput.value.length;
+          amountInput.value = formatted;
+          amountInput.setSelectionRange(Math.max(0, start + diff), Math.max(0, start + diff));
+        }
+        onInputChange();
+      });
+
+      addInfoInput.addEventListener("input", function () {
+        addinfoCount.textContent = addInfoInput.value.length + " / 50 ký tự";
+        onInputChange();
+      });
+
+      // Preset chips
+      document.querySelectorAll(".preset-chip").forEach(function (chip) {
+        chip.addEventListener("click", function () {
+          var val = chip.getAttribute("data-amount");
+          amountInput.value = parseInt(val, 10).toLocaleString("vi-VN");
+          document.querySelectorAll(".preset-chip").forEach(function (c) {
+            c.classList.remove("active");
+          });
+          chip.classList.add("active");
+          onInputChange();
+        });
+      });
+
+      // Sync active chip on manual input
+      amountInput.addEventListener("input", function () {
+        var typed = getDigits(amountInput.value);
+        var match = document.querySelector('.preset-chip[data-amount="' + typed + '"]');
+        document.querySelectorAll(".preset-chip").forEach(function (c) {
+          c.classList.toggle("active", c === match);
+        });
+      });
+
+      // Init from URL params
+      if (initAmt) {
+        amountInput.value = parseInt(getDigits(initAmt), 10).toLocaleString("vi-VN");
+        var amtDigits = getDigits(initAmt);
+        // Try exact match first, then match without trailing zeros (520000 → 520)
+        var match = document.querySelector('.preset-chip[data-amount="' + amtDigits + '"]');
+        if (!match) {
+          var shortAmt = String(parseInt(amtDigits, 10));
+          match = document.querySelector('.preset-chip[data-amount="' + shortAmt + '"]');
+        }
+        if (match) match.classList.add("active");
+      }
+      if (initInfo) {
+        addInfoInput.value = initInfo;
+        addinfoCount.textContent = initInfo.length + " / 50 ký tự";
+      }
+
+      qrImg.onerror = function () {
+        qrFallback.classList.add("visible");
+        qrImg.style.display = "none";
+      };
+
+      updatePreview();
+      updateQr();
+
+      // Copy STK
+      function showToast(msg) {
+        var t = document.getElementById("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        clearTimeout(showToast._id);
+        showToast._id = setTimeout(function () {
+          t.classList.remove("show");
+        }, 2000);
+      }
+
+      document.getElementById("copyStk").addEventListener("click", function () {
+        var text = ACCOUNT_NO;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () {
+            showToast("Đã sao chép số tài khoản");
+          }, function () { fallbackCopy(text); });
+        } else {
+          fallbackCopy(text);
+        }
+      });
+
+      function fallbackCopy(text) {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand("copy");
+          showToast("Đã sao chép số tài khoản");
+        } catch (e) {
+          showToast("Không sao chép được");
+        }
+        document.body.removeChild(ta);
+      }
+    })();
+  </script>
+</body>
+</html>
